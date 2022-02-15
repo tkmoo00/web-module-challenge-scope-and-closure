@@ -2,24 +2,27 @@
 
 /**Example Task : processFirstItem()
  * This example shows how you might go about solving the rest of the tasks
- * 
+ *
  * Use the higher order function processFirstItem below to do the following:
  *  1. Receive an array of strings in a parameter
  *  2. Receive a callback function that takes a string as its argument in a parameter
- *  3. Return the result of invoking the callback function and passing in the FIRST 
+ *  3. Return the result of invoking the callback function and passing in the FIRST
  *     element in the array as the argument
- * 
+ *
  * The following code is demonstrating a way of completing this task
  * It returns the string `foofoo`
-*/
+ */
 
 function processFirstItem(stringList, callback) {
-  return callback(stringList[0])
+  return callback(stringList[0]);
 }
-console.log(processFirstItem(['foo','bar'],function(str){return str+str}));
+console.log(
+  processFirstItem(["foo", "bar"], function (str) {
+    return str + str;
+  })
+);
 
 // ⭐️ Example Challenge END ⭐️
-
 
 ///// M V P ///////
 
@@ -28,22 +31,26 @@ console.log(processFirstItem(['foo','bar'],function(str){return str+str}));
   Study the code for counter1 and counter2, then answer the questions below.
   
   1. What is the difference between counter1 and counter2?
-  
+  The counts in counter1 are in their own seperate function scopes
+  The counts in counter2 have one outside in the global scope and the other in a function scope.
   2. Which of the two uses a closure? How can you tell?
-  
+  counter1 because the counter fuction revers to a variable in another function directly outside of its scope
   3. In what scenario would the counter1 code be preferable? In what scenario would 
      counter2 be better?  
+     Counter1 will be superior in every case because more condesned code is cleaner and much easier to maintain and debug.
 */
 
 // counter1 code
 function counterMaker() {
   let count = 0;
   return function counter() {
-   return count++;
-  }
+    return count++;
+  };
 }
 
 const counter1 = counterMaker();
+
+// console.log(counter1());
 
 // counter2 code
 let count = 0;
@@ -52,6 +59,7 @@ function counter2() {
   return count++;
 }
 
+// console.log(counter2());
 
 /* ⚾️⚾️⚾️ Task 2: inning() ⚾️⚾️⚾️
 Use the inning function below to do the following:
@@ -62,10 +70,12 @@ Use the inning function below to do the following:
 NOTE: This will be a callback function for the tasks below
 */
 
-function inning(/*Code Here*/){
-    /*Code Here*/
+function inning() {
+  let points = Math.floor(Math.random() * 3);
+  return points;
 }
 
+console.log(inning());
 
 /* ⚾️⚾️⚾️ Task 3: finalScore() ⚾️⚾️⚾️
 Use the finalScore function below to do the following:
@@ -79,21 +89,33 @@ Use the finalScore function below to do the following:
   "Home": 11,
   "Away": 5
 }
-*/ 
+*/
 
-function finalScore(/*code Here*/){
-  /*Code Here*/
+function finalScore(inning, inningNum) {
+  let home = 0,
+    away = 0;
+  for (let i = 0; i < inningNum; i++) {
+    home = home + inning();
+    away = away + inning();
+  }
+  return { Home: home, Away: away };
 }
+
+// console.log(finalScore(inning, 9));
 
 /* ⚾️⚾️⚾️ Task 4: getInningScore() ⚾️⚾️⚾️
 Use the getInningScore() function below to do the following:
   1. Receive a callback function - you will pass in the inning function from task 2 as your argument 
   2. Return an object with a score for home and a score for away that populates from invoking the inning callback function */
 
-function getInningScore(/*Your Code Here */) {
-  /*Your Code Here */
+function getInningScore(callback) {
+  return {
+    Home: callback,
+    Away: callback,
+  };
 }
 
+// console.log(getInningScore(inning()));
 
 /* ⚾️⚾️⚾️ Task 5: scoreboard() ⚾️⚾️⚾️
 Use the scoreboard function below to do the following:
@@ -136,17 +158,37 @@ Use the scoreboard function below to do the following:
 ]  
   */
 
-function scoreboard(/* CODE HERE */) {
-  /* CODE HERE */
+function scoreboard(callbackGIS, callbackInning, inningNum) {
+  const scoreByInning = [];
+  let home = 0;
+  let away = 0;
+
+  for (let i = 0; i < inningNum; i++) {
+    const currentInning = callbackInning(callbackGIS);
+    home = home + callbackInning(callbackGIS).Home;
+    away = away + callbackInning(callbackGIS).Away;
+    scoreByInning.push(
+      `Inning ${i + 1}: Away ${currentInning.Away} - Home ${currentInning.Home}`
+    );
+  }
+
+  if (home === away) {
+    const currentInning = callbackInning(callbackGIS);
+    scoreByInning.push(
+      `This game will require extra innings: Away ${currentInning.Away} - Home ${currentInning.Home}`
+    );
+  } else {
+    scoreByInning.push(`Final Score: Away: ${away} - Home ${home}`);
+  }
+  return scoreByInning;
 }
 
-
-
+console.log(scoreboard(getInningScore, inning, 9));
 
 /* 🛑🛑🛑🛑🛑 Please do not modify anything below this line 🛑🛑🛑🛑🛑 */
-function foo(){
-  console.log('its working');
-  return 'bar';
+function foo() {
+  console.log("its working");
+  return "bar";
 }
 foo();
 module.exports = {
@@ -158,4 +200,4 @@ module.exports = {
   finalScore,
   getInningScore,
   scoreboard,
-}
+};
